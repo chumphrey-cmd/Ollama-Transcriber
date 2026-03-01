@@ -25,6 +25,7 @@ audio_processing:
 
 transcription:
   model_selection: "base" # (options include tiny, base, small, medium, large)
+  language: "en" # (Whisper uses: en, es, fr, de, it, pt, nl, ru, ja, ko, zh)
 
 prompts:
   summary_prompt: | # CUSTOMIZE (modify the prompt as needed)

@@ -57,6 +57,9 @@ Examples:
                         choices=['tiny', 'base', 'small', 'medium', 'large'],
                         help='Whisper model selection for transcription (default: from config.yaml)')
     
+    parser.add_argument('--language', type=str,
+                        help='Language code for transcription (e.g., en, es, fr). Use "auto" for detection.')
+    
     parser.add_argument('--gui', action='store_true',
                         help='Launch GUI file picker to select audio file')
     
@@ -197,12 +200,24 @@ def main():
             logging.info("Starting audio transcription...")
             print("Starting audio transcription...")
             
+            # Determine the target language. 
+            # It checks CLI arguments first, then falls back to config.yaml.
+            # We use .get('language', 'en') to safely default to English if the key is missing.
+            target_language = args.language if args.language else config['transcription'].get('language', 'en')
+            
+            # Whisper expects `None` if we want it to auto-detect the language.
+            if target_language.lower() == "auto":
+                target_language = None
+            
+            # Let the user know what language is being used
+            print(f"Using language: {target_language or 'auto-detect'}")
+            
             # Ensure transcription directory exists
             transcription_dir = Path(config['transcription']['transcription_directory'])
             transcription_dir.mkdir(parents=True, exist_ok=True)
             
-            # Perform audio transcription
-            transcribe_audio(str(audio_file_path), str(transcription_dir), model)
+            # Perform audio transcription, now passing the target_language
+            transcribe_audio(str(audio_file_path), str(transcription_dir), model, language=target_language)
             
             # Construct path to the transcript file
             transcript_path = transcription_dir / f"{audio_file_path.stem}.txt"
