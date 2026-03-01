@@ -101,20 +101,40 @@ To run the project, use the `main.py` script with the following options:
 python3.10 main.py [OPTIONS]
 ```
 
-| Command                                                                | Description                                                                 |
-| :--------------------------------------------------------------------- | :-------------------------------------------------------------------------- |
-| `python3.10 main.py --gui`                                            | Use the graphical user interface (GUI) to select an audio file.           |
-| `python3.10 main.py --audio path/to/recording.mp3`                    | Process a specific audio file with default settings.                      |
+| Command | Description |
+| --- | --- |
+| `python3.10 main.py --gui` | Use the graphical user interface (GUI) to select an audio file. |
+| `python3.10 main.py --audio path/to/recording.mp3` | Process a specific audio file with default settings. |
+| `python3.10 main.py --audio path/to/recording.mp3 --language es` | Specify the language of the audio file (e.g., Spanish) using ISO codes. |
 | `python3.10 main.py --audio path/to/recording.mp3 --output path/to/output --transcript medium` | Specify the output directory and the Whisper model size for transcription. |
-| `python3.10 main.py --audio path/to/recording.mp3 --llm mistral:latest` | Use a specific LLM model for summarization.                               |
-| `python3.10 main.py --audio path/to/recording.mp3 --output path/to/summaries --transcript medium --llm mistral:latest` | Full example with all available options.                                  |
+| `python3.10 main.py --audio path/to/recording.mp3 --llm mistral:latest` | Use a specific LLM model for summarization. |
+| `python3.10 main.py --audio path/to/recording.mp3 --output path/to/summaries --transcript medium --language es --llm mistral:latest` | Full example with all available options. |
 | `python3.10 main.py --help` | For more information on the available options |
 
 The results of the processing will be stored in a `results` directory created in the same location where you run `main.py`. This directory will contain the following subdirectories:
 
-- `converted_audio/`: Stores the audio files converted to the required format (if necessary).
-- `meeting_summaries/`: Contains the generated meeting summary files.
-- `transcribed_text/`: Holds the transcriptions of the audio files.
+* `converted_audio/`: Stores the audio files converted to the required format (if necessary).
+* `meeting_summaries/`: Contains the generated meeting summary files.
+* `transcribed_text/`: Holds the transcriptions of the audio files.
+
+### Supported Languages
+
+Whisper supports nearly 100 languages. Pass the 2-letter ISO code using the `--language` flag (e.g., `--language es`).
+
+<details>
+<summary><strong>Click here to expand the full list of language codes</strong></summary>
+
+| Code | Language | Code | Language | Code | Language |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `en` | English | `es` | Spanish | `fr` | French |
+| `de` | German | `it` | Italian | `pt` | Portuguese |
+| `nl` | Dutch | `ja` | Japanese | `ko` | Korean |
+| `zh` | Chinese | `ru` | Russian | `ar` | Arabic |
+| `hi` | Hindi | `tr` | Turkish | `pl` | Polish |
+
+*(Note: You can find the complete list of all 90+ supported ISO-639-1 codes in the [official Whisper documentation](https://github.com/openai/whisper#available-models-and-languages).)*
+
+</details>
 
 ### System Prompt Customization
 

@@ -1,3 +1,4 @@
+from html import parser
 import logging
 import sys
 from pathlib import Path
@@ -58,7 +59,7 @@ Examples:
                         help='Whisper model selection for transcription (default: from config.yaml)')
     
     parser.add_argument('--language', type=str,
-                        help='Language code for transcription (e.g., en, es, fr). Use "auto" for detection.')
+                        help='Language code for transcription (e.g., "en" for English, "es" for Spanish, "fr" for French). Use "auto" for detection. See README for the full list of supported languages.')
     
     parser.add_argument('--gui', action='store_true',
                         help='Launch GUI file picker to select audio file')
