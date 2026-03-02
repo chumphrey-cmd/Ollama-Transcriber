@@ -9,11 +9,34 @@ The tool automatically generates structured summaries including:
 - Action items
 - Meeting metadata
 
-**NOTE:** This project is currently functional and tested on Windows 11.
+> [!NOTE]
+> This project is currently functional and tested on **Windows 11**.
 
 ---
 
-## Setup
+## Automated Setup (Windows)
+
+If you are on Windows, you can use the included PowerShell script to automatically install Chocolatey, FFmpeg, Python 3.10, and all required Python dependencies. 
+
+**Important:** You must run this script directly from the root folder of the cloned repository.
+
+1. Open PowerShell as an **Administrator**.
+2. Navigate to your cloned project directory:
+
+```bash
+cd path\to\Ollama-Transcriber
+```
+
+3. Run the setup script using the following command (this temporarily bypasses Windows execution policies to allow the script to run):
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File .\install.ps1
+```
+
+The script will automatically check for missing dependencies, set up your Python virtual environment, and verify your GPU access.
+
+
+## Manual Setup (Windows)
 
 ### Select Python Interpreter Version Between 3.8-3.11
 
@@ -21,7 +44,8 @@ The tool automatically generates structured summaries including:
 
 ### Install `ffmpeg` Globally as PowerShell Administrator
 
-**NOTE:** `ffmpeg` **DOES NOT** work in virutal environment and is required for Whisper to work. A "**[Win2]File not found error**" is thrown when attempting to use within a virtual environment, although  it is not best practice, utilize your global environment instead.
+> [!NOTE]
+> `ffmpeg` **DOES NOT** work in virutal environment and is required for Whisper to work. A "**[Win2]File not found error**" is thrown when attempting to use within a virtual environment, although  it is not best practice, utilize your global environment instead.
 
 - Follow the instructions [HERE](https://chocolatey.org/install#individual) and install choclatey install via PowerShell Administration to install `ffmpeg`.
 
@@ -50,7 +74,7 @@ New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name
 - If you have NVIDIA GPUs, determine what compute platform you have present:
 
 ```bash
-  nvidia-smi.exe
+nvidia-smi.exe
 ```
 
 - Identify "CUDA Version"
@@ -59,7 +83,7 @@ New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name
 - Once installation is complete run:
 
 ```bash
-  python3.10 pytorch_verify.py
+python3.10 pytorch_verify.py
 ```
 
 Example Successfull Output:
