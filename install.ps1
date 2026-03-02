@@ -95,8 +95,30 @@ if (!(Test-Path -Path "venv")) {
 Write-Host "Virtual environment activated for installation."
 
 # Step 8: Install Requirements
-Write-Host "`n[7/8] Installing/Updating Python dependencies (This will take a few minutes)..." -ForegroundColor Green
-python -m pip install --upgrade pip
+Write-Host "`n[7/8] Checking Python dependencies..." -ForegroundColor Green
+python -m pip install --upgrade pip --quiet
+
+# Check if PyTorch is installed AND has CUDA available
+Write-Host "Verifying PyTorch CUDA installation..." -ForegroundColor Yellow
+$torchCudaAvailable = $false
+try {
+    # This inline python command prints "True" if CUDA is good, or throws an error/prints "False" if not
+    $result = python -c "import torch; print(torch.cuda.is_available())" 2>$null
+    if ($result -match "True") {
+        $torchCudaAvailable = $true
+    }
+} catch {
+    # Catch any errors if torch isn't installed at all
+}
+
+if ($torchCudaAvailable) {
+    Write-Host "PyTorch with CUDA is already installed and working. Skipping large download." -ForegroundColor Green
+} else {
+    Write-Host "PyTorch with CUDA not found. Installing now (This is a large download and may take a few minutes)..." -ForegroundColor Yellow
+    python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 --no-warn-script-location
+}
+
+Write-Host "`nInstalling remaining Python dependencies from requirements.txt..." -ForegroundColor Green
 python -m pip install -r requirements.txt --no-warn-script-location
 
 # Step 9: Final Verification
