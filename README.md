@@ -14,7 +14,7 @@ The tool automatically generates structured summaries including:
 
 ---
 
-## Automated Setup (Windows)
+## Windows Automated Setup: Using Python Virtual Environment (Recommended)
 
 If you are on Windows, you can use the included PowerShell script to automatically install Chocolatey, FFmpeg, Python 3.10, and all required Python dependencies. 
 
@@ -36,7 +36,7 @@ powershell.exe -ExecutionPolicy Bypass -File .\install.ps1
 The script will automatically check for missing dependencies, set up your Python virtual environment, and verify your GPU access.
 
 
-## Manual Setup (Windows)
+## Windows Manual Setup: Direct Install on Your Machine (Windows)
 
 ### Select Python Interpreter Version Between 3.8-3.11
 

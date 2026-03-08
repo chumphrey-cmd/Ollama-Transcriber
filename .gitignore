@@ -8,3 +8,4 @@ src/data/converted_audio/Armory Audio.mp3
 src/data/raw-audio/Armory Audio.m4a
 .qodo
 venv
+tmp/
