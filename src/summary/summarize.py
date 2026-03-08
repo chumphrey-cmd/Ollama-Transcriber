@@ -18,7 +18,7 @@ class TranscriptSummarizer:
         self.max_retries = config['llm']['max_retries']
         self.retry_delay = config['llm']['retry_delay']
         self.llm_options = config['llm']['options']
-        logging.info("TranscriptSummarizer initialized")  # Add this line
+        logging.info("TranscriptSummarizer initialized")
 
     def _read_transcript(self, transcript_path: str) -> str:
         """Read transcript file.
@@ -30,7 +30,7 @@ class TranscriptSummarizer:
             str: Content of the transcript file
         """
         try:
-            logging.info(f"Reading transcript from: {transcript_path}")  # Add this line
+            logging.info(f"Reading transcript from: {transcript_path}") 
             with open(transcript_path, 'r', encoding='utf-8') as file:
                 return file.read()
         except Exception as e:
@@ -48,7 +48,7 @@ class TranscriptSummarizer:
             Path: Path to the generated summary file
         """
         try:
-            logging.info("Starting transcript processing")  # Add this line
+            logging.info("Starting transcript processing") 
             # Strore the audio path for use in _save_document
             self.audio_path = audio_path
 
@@ -77,7 +77,7 @@ class TranscriptSummarizer:
         
         for attempt in range(self.max_retries):
             try:
-                logging.info(f"Attempt {attempt + 1} to generate summary")  # Add this line
+                logging.info(f"Attempt {attempt + 1} to generate summary")
                 data = {
                     "model": self.model_name,
                     "prompt": f"{prompt}\n\nText: {text}",
@@ -85,7 +85,7 @@ class TranscriptSummarizer:
                     "options": self.llm_options
                 }
                 
-                response = requests.post(self.api_url, json=data, timeout=30)
+                response = requests.post(self.api_url, json=data, timeout=600) # 10 minutes timeout
                 response.raise_for_status()
                 
                 result = response.json()['response']
@@ -104,7 +104,7 @@ class TranscriptSummarizer:
     def _prepare_metadata(self, audio_path: str) -> Dict[str, str]:
         """Prepare document metadata."""
         try:
-            logging.info("Preparing metadata")  # Add this line
+            logging.info("Preparing metadata")   
             metadata = {
                 "date": datetime.now().strftime(
                     self.config['document_format']['metadata']['date_format']
@@ -119,13 +119,13 @@ class TranscriptSummarizer:
                 
             return metadata
         except Exception as e:
-            logging.error("Error preparing metadata")  # Add this line
+            logging.error("Error preparing metadata")   
             raise
 
     def _get_audio_duration(self, audio_path: str) -> str:
         """Get formatted audio duration."""
         try:
-            logging.info(f"Getting audio duration for: {audio_path}")  # Add this line
+            logging.info(f"Getting audio duration for: {audio_path}")   
             audio = AudioSegment.from_file(audio_path)
             duration = len(audio) / 1000.0
             
@@ -146,7 +146,7 @@ class TranscriptSummarizer:
     def _format_document(self, summaries: Dict[str, str], metadata: Dict[str, str]) -> str:
         """Format the summary document."""
         try:
-            logging.info("Formatting document")  # Add this line
+            logging.info("Formatting document")   
             metadata_section = self._format_metadata(metadata)
             
             return self.config['document_format']['template'].format(
@@ -157,19 +157,19 @@ class TranscriptSummarizer:
                 )
             )
         except Exception as e:
-            logging.error("Error formatting document")  # Add this line
+            logging.error("Error formatting document")   
             raise
 
     def _format_metadata(self, metadata: Dict[str, str]) -> str:
         """Format metadata section."""
         try:
-            logging.info("Formatting metadata section")  # Add this line
+            logging.info("Formatting metadata section")   
             lines = [self.config['document_format']['metadata']['header']]
             for field in self.config['document_format']['metadata']['fields']:
                 lines.append(f"- {field.title()}: {metadata.get(field, 'Not specified')}")
             return "\n".join(lines + ["\n"])
         except Exception as e:
-            logging.error("Error formatting metadata section")  # Add this line
+            logging.error("Error formatting metadata section")   
             raise
 
     def _save_document(self, formatted_text: str) -> Path:
@@ -183,7 +183,7 @@ class TranscriptSummarizer:
             Path: The path to the saved document
         """
         try:
-            logging.info("Saving document")  # Add this line
+            logging.info("Saving document")   
             output_dir = Path(self.config['transcription']['meeting_summary_directory'])
             output_dir.mkdir(parents=True, exist_ok=True)
             
