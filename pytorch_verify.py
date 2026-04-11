@@ -8,8 +8,14 @@ if torch.cuda.is_available():
     print(f"GPU Detected: {device_name}")
     print("Transcription will be hardware-accelerated and fast.")
 else:
-    print("WARNING: CUDA (GPU) is NOT available.")
-    print("PyTorch will fall back to using your CPU.")
-    print("NOTE: Transcription will be highly resource-intensive and significantly slower.")
+    if torch.xpu.is_available():
+        device_name = torch.xpu.get_device_name(0)
+        print("SUCCESS: XPU is available!")
+        print(f"GPU Detected: {device_name}")
+        print("Transcription will be hardware-accelerated and fast.")
+    else:
+        print("WARNING: CUDA (GPU) is NOT available.")
+        print("PyTorch will fall back to using your CPU.")
+        print("NOTE: Transcription will be highly resource-intensive and significantly slower.")
 
 print("-----------------------------------\n")
