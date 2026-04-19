@@ -9,11 +9,11 @@ import argparse
 project_root = Path(__file__).parent
 sys.path.append(str(project_root))
 
-# Ensure the user is running a supported Python version (3.8 to 3.11)
-if sys.version_info < (3, 8) or sys.version_info >= (3, 12):
+# Ensure the user is running a supported Python version (3.8+)
+if sys.version_info < (3, 8):
     print("ERROR: Unsupported Python Version")
     print(f"You are running Python {sys.version_info.major}.{sys.version_info.minor}.")
-    print("Ollama Transcriber requires Python 3.8, 3.9, 3.10, or 3.11.")
+    print("Ollama Transcriber requires Python 3.8 or later.")
     print("Please use the correct version or activate your virtual environment.\n")
     sys.exit(1)
 
@@ -174,10 +174,10 @@ def main():
             print(f"Exception caught in audio conversion: {e}")
             logging.error(f"FFmpeg Error during conversion: {e}")
             print(
-                "FFmpeg not found. Please ensure ffmpeg.exe is:\n"
-                "1. Added to system PATH, or\n"
-                "2. Placed in the same directory as this script\n"
-                "Download FFmpeg from: https://github.com/BtbN/FFmpeg-Builds/releases"
+                "FFmpeg not found. Please ensure ffmpeg is installed and in your PATH.\n"
+                "  Linux:   sudo apt install ffmpeg   (or your distro's package manager)\n"
+                "  macOS:   brew install ffmpeg\n"
+                "  Windows: choco install ffmpeg"
             )
             sys.exit(1)
         except ValueError as e:
