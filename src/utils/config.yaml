@@ -1,17 +1,17 @@
-llm: 
-  model_name: "llama3.1:8b" # CUSTOMIZE (select from available models)
-  max_retries: 5 
-  retry_delay: 3 
-  api_url: "http://localhost:11434/api/generate"
+llm:
+  model_name: "gemma-4-e2b-uncensored-pruned-textonly-englishonly" # CUSTOMIZE (select from available models)
+  max_retries: 5
+  retry_delay: 3
+  api_url: "http://localhost:12349/v1/chat/completions" #/v1/chat/completions for llmstudio, /generate for openai
+  api_mode: "openai"
   options:
-    temperature: 0.3 
-    top_p: 0.5 
+    temperature: 0.3
+    top_p: 0.5
     num_ctx: 16384 # CUSTOMIZE (options include 4096, 8192, 16384, 32768, 65536 depnding on RAM)
     num_predict: 1024
     top_k: 40
     repeat_penalty: 1.15
-    num_gpu: 50 
-
+    num_gpu: 50
 
 output:
   format: "md" # (options include md or txt)
@@ -21,7 +21,7 @@ paths: {}
 audio:
   output_format: "mp3" # (options include wav or mp3)
 
-audio_processing: 
+audio_processing:
 
 transcription:
   model_selection: "base" # (options include tiny, base, small, medium, large)
@@ -30,15 +30,15 @@ transcription:
 prompts:
   summary_prompt: | # CUSTOMIZE (modify the prompt as needed)
     Analyze the provided transcript and create a comprehensive Summary Report that captures all essential information.
-    
+
     Structure the summary as follows:
-    
+
     1. **EXECUTIVE OVERVIEW**
     - Synthesize core meeting purpose and outcomes
     - Highlight critical decisions and strategic implications
     - Emphasize time-sensitive matters and key commitments
     - Identify potential risks and mitigation strategies
-        
+
     2. **KEY DISCUSSION POINTS**
     - Present main topics chronologically with timestamps
     - Include relevant context and supporting details
@@ -47,7 +47,7 @@ prompts:
     - Highlight cross-functional dependencies and impacts
     - Note areas requiring additional research or clarification
     - Record key stakeholder concerns and proposed solutions
-    
+
     3. **ACTION ITEMS AND RESPONSIBILITIES**
     - List concrete tasks with clear ownership and deliverables
     - Include specific timelines and dependencies
@@ -55,7 +55,7 @@ prompts:
     - Document success criteria and acceptance metrics
     - Identify potential blockers and contingency plans
     - Track related tasks and downstream impacts
-    
+
     4. **CONCLUSIONS AND NEXT STEPS**
     - Summarize achieved outcomes against objectives
     - List immediate next actions with owners
@@ -63,7 +63,7 @@ prompts:
     - Note scheduled follow-ups and key milestones
     - Outline communication plan for key stakeholders
     - Identify required changes to existing plans or processes
-    
+
     Format Guidelines:
     - Use clear, professional language with consistent terminology
     - Maintain objective tone and avoid ambiguous language
@@ -89,7 +89,7 @@ document_format:
       participants: "YOUR_INPUT_HERE" # OPTIONAL
       location: "YOUR_INPUT_HERE" # OPTIONAL
       meeting_type: "YOUR_INPUT_HERE" # OPTIONAL
-  
+
   template: |
     # Meeting Summary Report
 

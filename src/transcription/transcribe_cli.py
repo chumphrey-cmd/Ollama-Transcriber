@@ -1,3 +1,4 @@
+from torch.xpu import is_available
 import whisper
 import torch
 import os
@@ -72,7 +73,13 @@ def load_model(model_name):
         sys.exit(1)
 
     # Check if GPU (CUDA) is available, otherwise use CPU
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    if torch.cuda.is_available():
+        device = "cuda" if torch.cuda.is_available()
+    else:
+        if torch.xpu.is_available():
+            device = "xpu"
+        else:
+        device = "cpu"
     print(f"Loading model on {device}...")
     
     # Load the model onto the specified device (GPU or CPU)

@@ -24,16 +24,17 @@ from src.transcription.transcribe import transcribe_audio
 from src.summary.summarize import TranscriptSummarizer
 from src.utils.input_handler import select_audio_file
 
+
 def parse_arguments():
     """
     Parse command line arguments for the audio transcription and summarization tool.
-    
+
     Returns:
         argparse.Namespace: Parsed command line arguments
     """
     parser = argparse.ArgumentParser(
-        description='Audio Transcription and Summarization Tool',
-        epilog='''
+        description="Audio Transcription and Summarization Tool",
+        epilog="""
 Examples:
     # Use GUI to select audio file
     python main.py --gui
@@ -49,35 +50,48 @@ Examples:
     
     # Full example with all options
     python main.py --audio path/to/recording.mp3 --output path/to/summaries --transcript medium --llm mistral:latest
-''',
-        formatter_class=argparse.RawDescriptionHelpFormatter  # Preserves formatting in epilog
+""",
+        formatter_class=argparse.RawDescriptionHelpFormatter,  # Preserves formatting in epilog
     )
-    
-    parser.add_argument('--audio', type=str, 
-                        help='Path to audio file to transcribe and summarize')
-    
-    parser.add_argument('--output', type=str,
-                        help='Path to output directory for saving summaries')
-    
-    parser.add_argument('--llm', type=str,
-                        help='Name of Ollama model to use for summarization (default: from config.yaml)')
-    
-    parser.add_argument('--transcript', type=str, 
-                        choices=['tiny', 'base', 'small', 'medium', 'large'],
-                        help='Whisper model selection for transcription (default: from config.yaml)')
-    
-    parser.add_argument('--language', type=str,
-                        help='Language code for transcription (e.g., "en" for English, "es" for Spanish, "fr" for French). Use "auto" for detection. See README for the full list of supported languages.')
-    
-    parser.add_argument('--gui', action='store_true',
-                        help='Launch GUI file picker to select audio file')
-    
+
+    parser.add_argument(
+        "--audio", type=str, help="Path to audio file to transcribe and summarize"
+    )
+
+    parser.add_argument(
+        "--output", type=str, help="Path to output directory for saving summaries"
+    )
+
+    parser.add_argument(
+        "--llm",
+        type=str,
+        help="Name of Ollama model to use for summarization (default: from config.yaml)",
+    )
+
+    parser.add_argument(
+        "--transcript",
+        type=str,
+        choices=["tiny", "base", "small", "medium", "large"],
+        help="Whisper model selection for transcription (default: from config.yaml)",
+    )
+
+    parser.add_argument(
+        "--language",
+        type=str,
+        help='Language code for transcription (e.g., "en" for English, "es" for Spanish, "fr" for French). Use "auto" for detection. See README for the full list of supported languages.',
+    )
+
+    parser.add_argument(
+        "--gui", action="store_true", help="Launch GUI file picker to select audio file"
+    )
+
     return parser.parse_args()
+
 
 def main():
     """
     Main entry point for the audio processing, transcription, and summarization pipeline.
-    
+
     Workflow:
     1. Parse command line arguments
     2. Configuration loading and logging setup
@@ -85,7 +99,7 @@ def main():
     4. Whisper model initialization
     5. Audio transcription
     6. Transcript summarization
-    
+
     All paths and settings are driven by config.yaml configuration with optional
     overrides from command line arguments.
     """
@@ -94,7 +108,7 @@ def main():
     try:
         # Step 1: Parse command line arguments
         args = parse_arguments()
-        
+
         # Step 2: Configuration Loading and Logging Setup
         config_manager = ConfigManager()
         config = config_manager.config
@@ -104,47 +118,51 @@ def main():
         if args.gui:
             file_path = select_audio_file()
             if file_path:
-                config['paths']['audio_file'] = file_path
+                config["paths"]["audio_file"] = file_path
                 print(f"Selected audio file: {file_path}")
             else:
                 print("No audio file selected. Exiting.")
                 sys.exit(1)
         # Otherwise use CLI arguments if provided
         elif args.audio:
-            config['paths']['audio_file'] = args.audio
+            config["paths"]["audio_file"] = args.audio
             print(f"Using audio file from command line: {args.audio}")
 
         # Update other config values if provided
         if args.output:
-            config['transcription']['meeting_summary_directory'] = args.output
+            config["transcription"]["meeting_summary_directory"] = args.output
             print(f"Output directory set to: {args.output}")
         if args.llm:
-            config['llm']['model_name'] = args.llm
+            config["llm"]["model_name"] = args.llm
             print(f"LLM model set to: {args.llm}")
         if args.transcript:
-            config['transcription']['model_selection'] = args.transcript
+            config["transcription"]["model_selection"] = args.transcript
             print(f"Whisper model set to: {args.transcript}")
 
         logging.info("Configuration loaded and logging initialized.")
-        
+
         # Log the configuration settings being used
         logging.info(f"Audio file: {config['paths']['audio_file']}")
-        logging.info(f"Output directory: {config['transcription']['meeting_summary_directory']}")
+        logging.info(
+            f"Output directory: {config['transcription']['meeting_summary_directory']}"
+        )
         logging.info(f"LLM model: {config['llm']['model_name']}")
         logging.info(f"Whisper model: {config['transcription']['model_selection']}")
 
         # Step 3: Audio Processing and Conversion
         # Construct paths using PathLib for cross-platform compatibility
-        audio_file_path = Path(config['paths']['audio_file'])
-        
+        audio_file_path = Path(config["paths"]["audio_file"])
+
         # Verify that audio file exists
         if not audio_file_path.exists():
             logging.error(f"Audio file not found: {audio_file_path}")
             print(f"Error: Audio file not found: {audio_file_path}")
             sys.exit(1)
-            
-        converted_audio_dir = Path(config['audio_processing']['converted_audio_directory'])
-        output_format = config['audio']['output_format']
+
+        converted_audio_dir = Path(
+            config["audio_processing"]["converted_audio_directory"]
+        )
+        output_format = config["audio"]["output_format"]
 
         # Create converted audio directory if it doesn't exist
         converted_audio_dir.mkdir(parents=True, exist_ok=True)
@@ -155,16 +173,20 @@ def main():
             logging.info("Trying to convert audio")  # Add this line
             if audio_file_path.suffix.lower() != f".{output_format}":
                 # Generate path for converted audio file
-                converted_audio_path = converted_audio_dir / f"{audio_file_path.stem}.{output_format}"
+                converted_audio_path = (
+                    converted_audio_dir / f"{audio_file_path.stem}.{output_format}"
+                )
                 logging.info(f"Converting {audio_file_path} to {output_format}")
                 print(f"Converting audio to {output_format} format...")
-                
+
                 # Attempt audio conversion
-                if not convert_audio(str(audio_file_path), output_format, str(converted_audio_path)):
+                if not convert_audio(
+                    str(audio_file_path), output_format, str(converted_audio_path)
+                ):
                     raise ValueError(f"Audio conversion failed for {audio_file_path}")
                 logging.info(f"Audio converted successfully to: {converted_audio_path}")
                 print(f"Audio converted successfully")
-                
+
                 # Update path to use converted audio
                 audio_file_path = converted_audio_path
             else:
@@ -193,9 +215,13 @@ def main():
 
         # Step 4: Load Whisper Model
         try:
-            logging.info(f"Loading Whisper model: {config['transcription']['model_selection']}")
-            print(f"Loading Whisper model '{config['transcription']['model_selection']}' on cuda...")
-            model = whisper.load_model(config['transcription']['model_selection'])
+            logging.info(
+                f"Loading Whisper model: {config['transcription']['model_selection']}"
+            )
+            print(
+                f"Loading Whisper model '{config['transcription']['model_selection']}' on device..."
+            )
+            model = whisper.load_model(config["transcription"]["model_selection"])
             logging.info("Whisper model loaded successfully")
             print("Whisper model loaded successfully")
         except Exception as e:
@@ -208,32 +234,41 @@ def main():
         try:
             logging.info("Starting audio transcription...")
             print("Starting audio transcription...")
-            
-            # Determine the target language. 
+
+            # Determine the target language.
             # It checks CLI arguments first, then falls back to config.yaml.
             # We use .get('language', 'en') to safely default to English if the key is missing.
-            target_language = args.language if args.language else config['transcription'].get('language', 'en')
-            
+            target_language = (
+                args.language
+                if args.language
+                else config["transcription"].get("language", "en")
+            )
+
             # Whisper expects `None` if we want it to auto-detect the language.
             if target_language.lower() == "auto":
                 target_language = None
-            
+
             # Let the user know what language is being used
             print(f"Using language: {target_language or 'auto-detect'}")
-            
+
             # Ensure transcription directory exists
-            transcription_dir = Path(config['transcription']['transcription_directory'])
+            transcription_dir = Path(config["transcription"]["transcription_directory"])
             transcription_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Perform audio transcription, now passing the target_language
-            transcribe_audio(str(audio_file_path), str(transcription_dir), model, language=target_language)
-            
+            transcribe_audio(
+                str(audio_file_path),
+                str(transcription_dir),
+                model,
+                language=target_language,
+            )
+
             # Construct path to the transcript file
             transcript_path = transcription_dir / f"{audio_file_path.stem}.txt"
             logging.info(f"Transcription saved to: {transcript_path}")
             logging.getLogger().handlers[0].flush()
             print(f"Transcription saved to: {transcript_path}")
-            
+
         except Exception as e:
             print(f"Exception caught in audio transcription: {e}")
             logging.error(f"Audio transcription failed: {e}")
@@ -244,12 +279,11 @@ def main():
         try:
             logging.info("Starting summary generation...")
             print("Starting summary generation...")
-            
+
             # Initialize and use TranscriptSummarizer
             summarizer = TranscriptSummarizer(config)
             summary_path = summarizer.process_transcript(
-                transcript_path=str(transcript_path),
-                audio_path=str(audio_file_path)
+                transcript_path=str(transcript_path), audio_path=str(audio_file_path)
             )
             logging.info(f"Summary generated and saved to: {summary_path}")
             print(f"Summary generated and saved to: {summary_path}")
@@ -266,5 +300,7 @@ def main():
         print(f"Error: {e}")
         sys.exit(1)
 
+
 if __name__ == "__main__":
     main()
+
