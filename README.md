@@ -1,3 +1,5 @@
+
+
 # Purpose
 
 This project offers a privacy-focused solution for transcribing and summarizing audio recordings through entirely local processing on your machine. Using OpenAI's Whisper for transcription and local LLMs via Ollama for summarization, it processes audio files (**MP3/WAV**) entirely on your machine, ensuring sensitive content never leaves your environment.
@@ -198,7 +200,7 @@ The results of the processing will be stored in a `results` directory created in
 
 ### Supported Languages
 
-Whisper supports nearly 100 languages. Pass the 2-letter ISO code using the `--language` flag (e.g., `--language es`).
+Whisper supports nearly 100 languages. Pass the 2-letter ISO code using the `--language` flag (e.g., `--language es`), or use `--language auto` to let Whisper detect the language.
 
 <details>
 <summary><strong>Click here to expand the full list of language codes</strong></summary>
