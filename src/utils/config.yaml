@@ -27,6 +27,36 @@ llm:
     top_k: 40
     repeat_penalty: 1.15
     num_gpu: 50
+  # Alternative configuration for summarizer, overrides the default values above.
+  summarizer:
+    # Active Provider: Options are "ollama", "openai", or "lm_studio"
+    provider: "ollama"
+    model_name: "llama3.1:8b" # CUSTOMIZE (select from available models)
+    max_retries: 5
+    retry_delay: 3
+
+    # --- Provider Specific Settings ---
+    ollama:
+      base_url: "http://localhost:11434"
+      endpoint: "/api/generate"
+    
+    lm_studio:
+      base_url: "http://localhost:12349"
+      endpoint: "/v1/chat/completions"
+
+    openai:
+      base_url: "https://api.openai.com"
+      endpoint: "/v1/chat/completions"
+      api_key: "your-api-key-here"
+      
+    options:
+      temperature: 0.3
+      top_p: 0.5
+      num_ctx: 16384 # CUSTOMIZE (options include 4096, 8192, 16384, 32768, 65536 depending on RAM)
+      num_predict: 1024
+      top_k: 40
+      repeat_penalty: 1.15
+      num_gpu: 50
 
 output:
   format: "md" # (options include md or txt)

@@ -14,12 +14,22 @@ class TranscriptSummarizer:
     def __init__(self, config):
         """Initialize with configuration and safe provider fallbacks."""
         self.config = config
-        llm_config = config.get("llm", {})
+        llm_config = config.get("llm", {
+            "provider": "ollama",
+            "model_name": "llama3.1:8b",
+            "max_retries": 5,
+            "retry_delay": 3,
+            "options": {}
+        })
+        try:
+            llm_config = llm_config.get("summarizer")
+        except KeyError:
+            print("No summarizer llm configuration, using default llm provider")
 
-        self.model_name = llm_config.get("model_name", "llama3.1:8b")
-        self.max_retries = llm_config.get("max_retries", 5)
-        self.retry_delay = llm_config.get("retry_delay", 3)
-        self.llm_options = llm_config.get("options", {})
+        self.model_name = llm_config.get("model_name")
+        self.max_retries = llm_config.get("max_retries")
+        self.retry_delay = llm_config.get("retry_delay")
+        self.llm_options = llm_config.get("options")
 
         # 1. Determine the provider
         if "provider" in llm_config:
